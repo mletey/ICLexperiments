@@ -12,14 +12,14 @@ sys.path.append('../../../')
 from common import *
 from train import train, create_train_state
 
-for i in range(14):
-    file_path = f'../../../../results-correctdatastruct/results5d{i}.txt'
-    with open(file_path, 'r') as file:
-        file_contents = file.read()
-    print(file_contents)
 
-#i = int(sys.argv[1])
-#file_path = f'../../../../results-correctdatastruct/trainhist5d{i}.pkl'
-#with open(file_path, 'rb') as fp:
-#    loaded = pickle.load(fp)
-#print(loaded['train'])
+i = int(sys.argv[1])
+file_path = f'../../../../results-correctdatastruct/trainhist10d{i}.pkl'
+with open(file_path, 'rb') as fp:
+    loaded = pickle.load(fp)
+
+loss_values = [Metrics.loss for Metrics in loaded['train']]
+vals = []
+for loss_array in loss_values:
+    vals.append(loss_array.item())
+print(vals)

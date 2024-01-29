@@ -1,7 +1,7 @@
 #!/bin/bash
-# taucurvesmall_arrays.sbatch
+# taucurve10d_arrays.sbatch
 #
-#SBATCH --job-name=taucurvesmall
+#SBATCH --job-name=taucurve10d
 #SBATCH -c 10
 #SBATCH -t 1-00:00:00
 #SBATCH -p seas_gpu,kempner,pehlevan_gpu,gpu
@@ -9,7 +9,7 @@
 #SBATCH --mem=32000
 #SBATCH -o /n/holyscratch01/pehlevan_lab/Everyone/run_%A_%a.out
 #SBATCH -e /n/holyscratch01/pehlevan_lab/Everyone/run_%A_%a.err
-#SBATCH --array=1-14
+#SBATCH --array=1-20
 #SBATCH --mail-type=END
 #SBATCH --mail-user=maryletey@fas.harvard.edu
 #SBATCH --account=kempner_pehlevan_lab

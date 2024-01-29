@@ -19,7 +19,7 @@ from task.regression import LinearRegression
 from task.regression import LinearRegressionCorrect
 
 d=10;
-tvals = np.array([0.1,0.3,0.5,0.7,0.9,1,1.1,1.3,1.5,1.7,2,3,4,10])
+tvals = np.array([0.1,0.3,0.5,0.7,0.8,0.9,1,1.1,1.2,1.3,1.5,1.7,1.9,2.1,2.5,3,3.5,4,5,10])
 Pvals = d**2.*tvals;
 alpha = 1; N = int(alpha*d);
 
@@ -33,7 +33,7 @@ P = int(Pvals[i]);
 linobject = LinearRegressionCorrect(n_points = N+1, n_dims= d, eta_scale = sigma, w_scale = psi, batch_size = P, seed=None);
 config = TransformerConfig(pos_emb=False, n_hidden=512)
 
-state, hist = train(config, data_iter=iter(linobject), loss='mse', test_every=1000, train_iters=200000, lr=1e-4)
+state, hist = train(config, data_iter=iter(linobject), loss='mse', test_every=1000, train_iters=250000, lr=1e-4)
 
 avgerr = 0;
 loss_func = optax.squared_error
