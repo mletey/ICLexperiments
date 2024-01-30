@@ -159,29 +159,25 @@ def train(config, data_iter,
     model = config.to_model()
 
     samp_x, _ = next(data_iter)
-    state = create_train_state(init_rng, model, samp_x, **opt_kwargs)
+    state = create_train_state(init_rng, model, samp_x, **opt_kwargs) # the samp_x data is not used during this initialisation
 
     hist = {
-        'train': [],
-        'test': []
+        'train': []
     }
 
-    for step, batch in zip(range(train_iters), data_iter):
-        state = train_step(state, batch, loss=loss, l1_weight=l1_weight, l2_weight=l2.weight)
-        state = compute_metrics(state, batch, loss=loss)
+    # sample from data class, this sample will be the only one used during training
+    # this is in contrast to the online case
+    mybatch = next(data_iter)
+
+    for step in range(train_iters)
+        state = train_step(state, mybatch, loss=loss, l1_weight=l1_weight, l2_weight=l2.weight)
+        state = compute_metrics(state, mybatch, loss=loss)
 
         if (step + 1) % test_every == 0:
             hist['train'].append(state.metrics)
 
             state = state.replace(metrics=Metrics.empty())
-            test_state = state
-            for _, test_batch in zip(range(test_iters), test_iter):
-                test_state = compute_metrics(test_state, test_batch, loss=loss)
-            
-            hist['test'].append(test_state.metrics)
-
-            _print_status(step+1, hist)
-        
+            #_print_status(step+1, hist)
             if early_stop_n is not None and len(hist['train']) > early_stop_n:
                 last_n_metrics = np.array([getattr(m, early_stop_key) for m in hist['train'][-early_stop_n - 1:]])
                 if early_stop_decision == 'min' and np.all(last_n_metrics[0] < last_n_metrics[1:]) \
