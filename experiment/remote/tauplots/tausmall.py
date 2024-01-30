@@ -9,7 +9,7 @@ import sys
 sys.path.append('../../')
 sys.path.append('../../../')
 from common import *
-from train import train, create_train_state
+from traintheory import train, create_train_state
 from model.knn import KnnConfig
 from model.mlp import MlpConfig
 from model.poly import PolyConfig
@@ -32,23 +32,22 @@ P = int(Pvals[i]);
 linobject = LinearRegressionCorrect(n_points = N+1, n_dims= d, eta_scale = sigma, w_scale = psi, batch_size = P, seed=None);
 config = TransformerConfig(pos_emb=False, n_hidden=512)
 
-state, hist = train(config, data_iter=iter(linobject), loss='mse', test_every=1000, train_iters=4000000, lr=1e-4)
+state, hist = train(config, data_iter=iter(linobject), loss='mse', test_every=1000, train_iters=500000, lr=1e-4)
 
 avgerr = 0;
 loss_func = optax.squared_error
-for _ in range(10):
+for _ in range(50):
   xs, labels = next(linobject); # generates data
   logits = state.apply_fn({'params': state.params}, xs); # runs xs through transformer and makes predictions
   #print("shape of output is", logits.shape)
 #file_path = f'../../../../../../Everyone/mletey_128_results/resultsfiner{i}.txt'
   avgerr = avgerr + loss_func(logits, labels).mean()
 
-avgerr = avgerr/10;
-file_path = f'../../../../resultssgd/longresults10d{i}.txt'
+avgerr = avgerr/50;
+file_path = f'../../../../resultstheory/results10d{i}.txt'
 with open(file_path, 'w') as file:
-    file.write(f"tau is {tvals[i]}\n")
-    file.write(f"error is {avgerr}\n")
-file_path = f'../../../../resultssgd/longtrainhist10d{i}.pkl'
+    file.write(avgerr)
+file_path = f'../../../../resultstheory/trainhist10d{i}.pkl'
 with open(file_path, 'wb') as fp:
     pickle.dump(hist, fp)
 
