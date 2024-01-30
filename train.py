@@ -46,7 +46,7 @@ class TrainState(train_state.TrainState):
 def create_train_state(rng, model, dummy_input, lr=1e-4, **opt_kwargs):
     params = model.init(rng, dummy_input)['params']
     #print("creattrainstate: model init works")
-    tx = optax.adamw(learning_rate=lr, **opt_kwargs)
+    tx = optax.sgd(learning_rate=lr, **opt_kwargs)
     #print("creattrainstate: optaxadam works")
 
     return TrainState.create(
@@ -80,8 +80,20 @@ def l1_loss(params):
 
     return loss
 
+def l2_loss(params):
+    # sum_params = jax.tree_map(lambda x: jnp.sum(jnp.abs(x)), jax.tree_util.tree_leaves(params))
+    # return jnp.sum(jnp.array(sum_params))
+    loss = 0
+    for name in params:
+        if 'MBlock' in name:
+            z_weights = params[name]['DenseMultiply']['kernel']
+            loss += jnp.sum(jnp.square(z_weights))
+
+    return loss
+
+
 @partial(jax.jit, static_argnames=('loss',))
-def train_step(state, batch, loss='bce', l1_weight=0):
+def train_step(state, batch, loss='bce', l1_weight=0, l2_weight=0):
     loss_name = loss
     x, labels = batch
     loss_func = parse_loss_name(loss_name)
@@ -97,7 +109,8 @@ def train_step(state, batch, loss='bce', l1_weight=0):
         assert len(loss.shape) == 1
 
         l1_term = l1_weight * l1_loss(params)
-        return loss.mean() + l1_term
+        l2_term = l2_weight * l2_loss(params)
+        return loss.mean() + l1_term + l2_term
     
     grad_fn = jax.grad(loss_fn)
     grads = grad_fn(state.params)
@@ -135,7 +148,7 @@ def train(config, data_iter,
           train_iters=10_000, test_iters=100, test_every=1_000, 
           early_stop_n=None, early_stop_key='loss', early_stop_decision='min' ,
           seed=None, 
-          l1_weight=0, **opt_kwargs):
+          l1_weight=0, l2_weight=0, **opt_kwargs):
     if seed is None:
         seed = new_seed()
     
@@ -144,11 +157,9 @@ def train(config, data_iter,
     
     init_rng = jax.random.key(seed)
     model = config.to_model()
-    #print("set up the model") 
 
     samp_x, _ = next(data_iter)
     state = create_train_state(init_rng, model, samp_x, **opt_kwargs)
-    #print("finished create-train-state")
 
     hist = {
         'train': [],
@@ -156,8 +167,7 @@ def train(config, data_iter,
     }
 
     for step, batch in zip(range(train_iters), data_iter):
-        state = train_step(state, batch, loss=loss, l1_weight=l1_weight)
-        #print("trained a step yay")
+        state = train_step(state, batch, loss=loss, l1_weight=l1_weight, l2_weight=l2.weight)
         state = compute_metrics(state, batch, loss=loss)
 
         if (step + 1) % test_every == 0:

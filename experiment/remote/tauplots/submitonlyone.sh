@@ -16,5 +16,5 @@ module load python/3.10.12-fasrc01
 module load cuda/12.2.0-fasrc01 cudnn/8.9.2.26_cuda12-fasrc01
 source activate try4
 export XLA_PYTHON_CLIENT_PREALLOCATE=false
-python tausmall.py 10
+python tausmall.py 1
 
