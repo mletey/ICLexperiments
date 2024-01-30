@@ -109,8 +109,8 @@ def train_step(state, batch, loss='bce', l1_weight=0, l2_weight=0):
         assert len(loss.shape) == 1
 
         l1_term = l1_weight * l1_loss(params)
-        l2_term = l2_weight * l2_loss(params)
-        return loss.mean() + l1_term + l2_term
+        #l2_term = l2_weight * l2_loss(params)
+        return loss.mean() + l1_term
     
     grad_fn = jax.grad(loss_fn)
     grads = grad_fn(state.params)
@@ -169,8 +169,8 @@ def train(config, data_iter,
     # this is in contrast to the online case
     mybatch = next(data_iter)
 
-    for step in range(train_iters)
-        state = train_step(state, mybatch, loss=loss, l1_weight=l1_weight, l2_weight=l2.weight)
+    for step in range(train_iters):
+        state = train_step(state, mybatch, loss=loss, l1_weight=l1_weight, l2_weight=l2_weight)
         state = compute_metrics(state, mybatch, loss=loss)
 
         if (step + 1) % test_every == 0:
@@ -190,60 +190,5 @@ def train(config, data_iter,
             
 def _print_status(step, hist):
     print(f'ITER {step}:  loss={hist["test"][-1].loss:.4f}   l1_loss={hist["test"][-1].l1_loss:.4f}  acc={hist["test"][-1].accuracy:.4f}')
-
-
-if __name__ == '__main__':
-    # domain = -3, 3
-    # task = DotProductTask(domain, n_dims=5, n_args=3, batch_size=256)
-    n_choices = 6
-    # task = FreeOddballTask(n_choices=n_choices, one_hot=True)
-    # task = LineOddballTask(n_choices=n_choices, linear_dist=10)
-    task = RingMatch(n_points=n_choices)
-
-    # config = TransformerConfig(pos_emb=True, n_emb=None, n_out=6, n_layers=3, n_hidden=128, use_mlp_layers=True, pure_linear_self_att=False)
-    config = MlpConfig(n_out=n_choices, n_layers=3, n_hidden=512)
-
-    # config = PolyConfig(n_hidden=512, n_layers=1, n_out=n_choices, disable_signage=False)
-    state, hist = train(config, data_iter=iter(task), loss='ce', test_every=1000, train_iters=50_000, early_stop_n=3, early_stop_decision='max', early_stop_key='accuracy', lr=1e-4, l1_weight=1e-4)
-
-    """Observations: transformer performs handsomely, with great sample efficiency. Then
-    MLP, then MNN performs the worst (but still reasonably well)""" # TODO: solidify <-- STOPPED HERE
-
-    # <codecell>
-    loss = [m.loss for m in hist['test']]
-    l1_loss = [m.l1_loss for m in hist['test']]
-    p1 = plt.plot(loss, label='Data loss')[0]
-    plt.yscale('log')
-    plt.xlabel('Time (x1000 batches)')
-
-    ax = plt.gca().twinx()
-    p2 = ax.plot(l1_loss, color='C1', label='L1 loss')[0]
-
-    ax.set_yscale('log')
-
-    plt.legend(handles=[p1, p2], loc='center right')
-
-    ax = plt.gca()
-    ax.spines['left'].set_color('C0')
-    ax.spines['right'].set_color('C1')
-    
-    plt.tight_layout()
-    # plt.savefig('experiment/fig/loss.png')
-
-
-    # %%
-    state.apply_fn({'params': state.params}, jnp.array([[0.5, 0.5]]), mutable='intm')
-
-    # %%
-    x = np.linspace(-4, 4, 50)
-    xs = np.stack((x, -x), axis=-1)
-
-    out = state.apply_fn({'params': state.params}, xs)
-
-    plt.plot(x, -x**2)
-    plt.plot(x, out, alpha=0.9, linestyle='dashed')
-
-    # <codecell>
-
 
 

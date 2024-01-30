@@ -14,7 +14,7 @@ from train import train, create_train_state
 
 varsar = []
 for i in range(1):
-    file_path = f'../../../../resultssgd/longtrainhist10d0.pkl'
+    file_path = f'../../../../resultstheory/trainhist10d0.pkl'
     with open(file_path, 'rb') as fp:
         loaded = pickle.load(fp)
     loss_values = [Metrics.loss for Metrics in loaded['train']]
