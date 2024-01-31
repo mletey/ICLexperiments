@@ -109,8 +109,8 @@ def train_step(state, batch, loss='bce', l1_weight=0, l2_weight=0):
         assert len(loss.shape) == 1
 
         l1_term = l1_weight * l1_loss(params)
-        #l2_term = l2_weight * l2_loss(params)
-        return loss.mean() + l1_term
+        l2_term = l2_weight * l2_loss(params)
+        return loss.mean() + l1_term + l2_term
     
     grad_fn = jax.grad(loss_fn)
     grads = grad_fn(state.params)
@@ -149,6 +149,9 @@ def train(config, data_iter,
           early_stop_n=None, early_stop_key='loss', early_stop_decision='min' ,
           seed=None, 
           l1_weight=0, l2_weight=0, **opt_kwargs):
+    
+    switch = int(train_iters/2)
+
     if seed is None:
         seed = new_seed()
     
@@ -162,7 +165,8 @@ def train(config, data_iter,
     state = create_train_state(init_rng, model, samp_x, **opt_kwargs) # the samp_x data is not used during this initialisation
 
     hist = {
-        'train': []
+        'train': [],
+        'test': []
     }
 
     # sample from data class, this sample will be the only one used during training
@@ -170,14 +174,24 @@ def train(config, data_iter,
     mybatch = next(data_iter)
 
     for step in range(train_iters):
+        if step == switch:
+            # switch optimisers
+            state = state.replace(tx = optax.adamw(learning_rate=1e-4))
+
         state = train_step(state, mybatch, loss=loss, l1_weight=l1_weight, l2_weight=l2_weight)
         state = compute_metrics(state, mybatch, loss=loss)
 
         if (step + 1) % test_every == 0:
             hist['train'].append(state.metrics)
-
-            state = state.replace(metrics=Metrics.empty())
-            #_print_status(step+1, hist)
+            state = state.replace(metrics=Metrics.empty()) 
+            
+            test_state = state
+            for _, test_batch in zip(range(test_iters), test_iter):
+                test_state = compute_metrics(test_state, test_batch, loss=loss)
+            
+            hist['test'].append(test_state.metrics)
+            
+            _print_status(step+1, hist)
             if early_stop_n is not None and len(hist['train']) > early_stop_n:
                 last_n_metrics = np.array([getattr(m, early_stop_key) for m in hist['train'][-early_stop_n - 1:]])
                 if early_stop_decision == 'min' and np.all(last_n_metrics[0] < last_n_metrics[1:]) \
