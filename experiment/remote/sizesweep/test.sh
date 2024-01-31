@@ -6,8 +6,8 @@
 #SBATCH -p seas_gpu,kempner,pehlevan_gpu,gpu
 #SBATCH --gres=gpu:1
 #SBATCH --mem=32000
-#SBATCH -o /n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiments/remote/sizesweep/outputdump/run_%A.out
-#SBATCH -e /n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiments/remote/sizesweep/outputdump/run_%A.err
+#SBATCH -o /n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiment/remote/sizesweep/outputdump/run_%A.out
+#SBATCH -e /n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiment/remote/sizesweep/outputdump/run_%A.err
 #SBATCH --mail-type=END
 #SBATCH --mail-user=maryletey@fas.harvard.edu
 #SBATCH --account=kempner_pehlevan_lab
@@ -20,5 +20,4 @@ export XLA_PYTHON_CLIENT_PREALLOCATE=false
 parentdir="resultsdump"
 newdir="$parentdir/job_${SLURM_JOB_NAME}_${SLURM_JOB_ID}"
 mkdir "$newdir"
-cd "$newdir"
-python test.py
+python test.py $newdir

@@ -6,11 +6,12 @@ import seaborn as sns
 import optax
 import pickle
 import sys
+sys.path.append('../../')
 sys.path.append('../../../')
-sys.path.append('../../../../')
 from common import *
 from traintheory import train, create_train_state
 
-file_path = f'./resulttest.txt'
+val=sys.argv[1]
+file_path = f'./{val}/resulttest.txt'
 with open(file_path, 'w') as file:
     file.write('hello wurld')
