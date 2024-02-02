@@ -43,10 +43,10 @@ class TrainState(train_state.TrainState):
     metrics: Metrics
 
 
-def create_train_state(rng, model, dummy_input, lr=1e-4, **opt_kwargs):
+def create_train_state(rng, model, dummy_input, lr=1e-4, optim=optax.adamw, **opt_kwargs):
     params = model.init(rng, dummy_input)['params']
     #print("creattrainstate: model init works")
-    tx = optax.sgd(learning_rate=lr, **opt_kwargs)
+    tx = optim(learning_rate=lr, **opt_kwargs)
     #print("creattrainstate: optaxadam works")
 
     return TrainState.create(
@@ -146,11 +146,10 @@ def train(config, data_iter,
           test_iter=None, 
           loss='ce', 
           train_iters=10_000, test_iters=100, test_every=1_000, 
-          early_stop_n=None, early_stop_key='loss', early_stop_decision='min' ,
+          early_stop_n=None, early_stop_key='loss', early_stop_decision='min',
+          optim=optax.adamw,
           seed=None, 
           l1_weight=0, l2_weight=0, **opt_kwargs):
-    
-    switch = int(train_iters/2)
 
     if seed is None:
         seed = new_seed()
@@ -162,7 +161,7 @@ def train(config, data_iter,
     model = config.to_model()
 
     samp_x, _ = next(data_iter)
-    state = create_train_state(init_rng, model, samp_x, **opt_kwargs) # the samp_x data is not used during this initialisation
+    state = create_train_state(init_rng, model, samp_x, optim=optim, **opt_kwargs) # the samp_x data is not used during this initialisation
 
     hist = {
         'train': [],
@@ -174,9 +173,6 @@ def train(config, data_iter,
     mybatch = next(data_iter)
 
     for step in range(train_iters):
-        if step == switch:
-            # switch optimisers
-            state = state.replace(tx = optax.adamw(learning_rate=1e-4))
 
         state = train_step(state, mybatch, loss=loss, l1_weight=l1_weight, l2_weight=l2_weight)
         state = compute_metrics(state, mybatch, loss=loss)
