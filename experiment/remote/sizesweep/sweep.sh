@@ -1,7 +1,7 @@
 #!/bin/bash
-# taus40d200_arrays.sbatch
+# minitest_arrays.sbatch
 # 
-#SBATCH --job-name=taus40d200
+#SBATCH --job-name=minitest
 #SBATCH -c 10
 #SBATCH -t 1-00:00:00
 #SBATCH -p seas_gpu,kempner,pehlevan_gpu,gpu
@@ -9,7 +9,7 @@
 #SBATCH --mem=32000
 #SBATCH -o /n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiment/remote/sizesweep/outputdump/run_%A_%a.out
 #SBATCH -e /n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiment/remote/sizesweep/outputdump/run_%A_%a.err
-#SBATCH --array=1-100
+#SBATCH --array=1-40
 #SBATCH --mail-type=END
 #SBATCH --mail-user=maryletey@fas.harvard.edu
 #SBATCH --account=kempner_pehlevan_lab

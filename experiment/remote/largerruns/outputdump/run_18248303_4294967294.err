@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiment/remote/largerruns/tau.py", line 36, in <module>
+    state, hist = train(config, data_iter=iter(linobject), full_batch = P, batch_size=np.min([1000,P]), loss='mse', test_every=1000, train_iters=2000, optim=optax.adamw,lr=1e-4)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiment/remote/largerruns/../../../trainmini.py", line 180, in train
+    minibatchi = get_random_batch(mybatch, full_batch, batch_size)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiment/remote/largerruns/../../../trainmini.py", line 146, in get_random_batch
+    return data[indices]
+           ~~~~^^^^^^^^^
+TypeError: only integer scalar arrays can be converted to a scalar index

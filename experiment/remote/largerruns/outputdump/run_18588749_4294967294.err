@@ -1,0 +1,3 @@
+mkdir: cannot create directory ‘resultsdump/job_test40d200_/pickles’: No such file or directory
+mkdir: cannot create directory ‘resultsdump/job_test40d200_/errors’: No such file or directory
+slurmstepd: error: *** JOB 18588749 ON holygpu8a19103 CANCELLED AT 2024-02-04T18:28:18 ***

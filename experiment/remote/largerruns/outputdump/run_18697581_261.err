@@ -1,0 +1,4 @@
+mkdir: cannot create directory ‘resultsdump/job_taus40d200_18697581’: File exists
+mkdir: cannot create directory ‘resultsdump/job_taus40d200_18697581/pickles’: File exists
+mkdir: cannot create directory ‘resultsdump/job_taus40d200_18697581/errors’: File exists
+slurmstepd: error: *** JOB 18778434 ON holygpu8a22602 CANCELLED AT 2024-02-06T21:53:13 ***
