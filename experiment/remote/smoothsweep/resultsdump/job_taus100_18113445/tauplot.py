@@ -28,16 +28,25 @@ d = 10;
 estimate = layers*hidden/d
 
 
-p1 = [errorcurve(alpha,t/estimate,0.5,sigma,psi) for t in range(1,101)];
-p2 = [errorcurve(alpha,t/estimate,0.1,sigma,psi) for t in range(1,101)];
-p3 = [errorcurve(alpha,t/estimate,1,sigma,psi) for t in range(1,101)];
+# p1 = [errorcurve(alpha,t/estimate,0.5,sigma,psi) for t in range(1,101)];
+# p2 = [errorcurve(alpha,t/estimate,0.1,sigma,psi) for t in range(1,101)];
+# p3 = [errorcurve(alpha,t/estimate,1,sigma,psi) for t in range(1,101)];
 
-plt.scatter(range(1,101),np.mean(experimentdata,axis=1),label="data")
-plt.plot(range(1,101),p1,label="lambda = 0.5")
-plt.plot(range(1,101),p2,label="lambda = 0.1")
-plt.plot(range(1,101),p3,label="lambda = 1")
-#plt.errorbar(range(1,101),np.mean(experimentdata,axis=1), yerr=np.var(experimentdata,axis=1), fmt='o', ecolor='red', capsize=2, capthick=1, label='Variance')
-plt.title("d = 10: 2 layers and 100 hidden dim")
-plt.xlabel("tau")
-plt.legend()
-plt.savefig('theory.png')
+# plt.scatter(range(1,101),np.mean(experimentdata,axis=1),label="data")
+# plt.plot(range(1,101),p1,label="lambda = 0.5")
+# plt.plot(range(1,101),p2,label="lambda = 0.1")
+# plt.plot(range(1,101),p3,label="lambda = 1")
+# #plt.errorbar(range(1,101),np.mean(experimentdata,axis=1), yerr=np.var(experimentdata,axis=1), fmt='o', ecolor='red', capsize=2, capthick=1, label='Variance')
+# plt.title("d = 10: 2 layers and 100 hidden dim")
+# plt.xlabel("tau")
+# plt.legend()
+# plt.savefig('theory.png')
+
+iterated = np.mean(experimentdata,axis=1)
+print('Inflection on average at', np.where(iterated==np.max(iterated))[0][0])
+
+taus = range(1,101)
+iterated[91] = 1.5 # remove stupid outlier
+print('A different averaging method', np.sum(np.multiply(taus[0:50],iterated[0:50]))/np.sum(iterated[0:50]))
+
+print('all maxes ',[np.where(experimentdata[:,i]==np.max(experimentdata[:,i]))[0][0] for i in range(10)])
