@@ -1,0 +1,8 @@
+mkdir: cannot create directory ‘resultsdump/diversitytest_19836824’: File exists
+mkdir: cannot create directory ‘resultsdump/diversitytest_19836824/pickles’: File exists
+mkdir: cannot create directory ‘resultsdump/diversitytest_19836824/errors’: File exists
+Traceback (most recent call last):
+  File "/n/holyscratch01/pehlevan_lab/Lab/mletey/ICLexperiments/experiment/remote/kappascale/sanity.py", line 30, in <module>
+    P = int(tvals[tauind]*(d**2));
+            ~~~~~^^^^^^^^
+IndexError: range object index out of range

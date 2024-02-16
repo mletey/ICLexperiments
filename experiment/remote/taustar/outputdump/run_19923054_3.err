@@ -1,0 +1,4 @@
+mkdir: cannot create directory ‘resultsdump/linestar10_19923054’: File exists
+mkdir: cannot create directory ‘resultsdump/linestar10_19923054/pickles’: File exists
+mkdir: cannot create directory ‘resultsdump/linestar10_19923054/errors’: File exists
+slurmstepd: error: *** JOB 19924129 ON holygpu8a19505 CANCELLED AT 2024-02-15T17:54:57 ***
