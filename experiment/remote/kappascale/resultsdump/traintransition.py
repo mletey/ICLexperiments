@@ -11,12 +11,12 @@ from common import *
 from train import train, create_train_state
 
 mydir = sys.argv[1]
-label = sys.argv[2]
+myalpha = float(sys.argv[2])
 
 trainvals = []
 testvals = []
 
-for i in range(60):
+for i in range(35):
     file_path = f'./{mydir}/pickles/train-{i}.pkl'
     with open(file_path, 'rb') as fp:
         loaded = pickle.load(fp)
@@ -27,7 +27,7 @@ for i in range(60):
 cutoff = 0.001
 overparam = [i for i in range(len(trainvals)) if trainvals[i] < cutoff]
 print("Tau Inflection at tau = ",overparam[-1])
-taus = range(1,61)
+taus = range(11,46)
 
 def growth(myarr):
     answ = []
@@ -44,9 +44,9 @@ plt.plot(taus,trainvals,label='Final Training Error')
 # deltas = growth(trainvals)
 # plt.plot(taus[0:30],deltas[0:30],label='delta Training Error')
 #plt.axvline(x=25,label='empirical inflection')
-plt.title(f'Train Error Regime Transition')
+plt.title(f'Train Error Transition - 2 Layers, 100 hidden dim, d = 7, k = 2*d, alpha = {myalpha}')
 plt.legend()
-plt.savefig(f'./transition-{label}.png')
+plt.savefig(f'../plots/transition-{myalpha}.png')
 
 # def computeslope(myarr):
 #     answ=[]

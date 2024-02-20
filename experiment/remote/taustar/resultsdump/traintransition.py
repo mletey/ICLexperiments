@@ -16,7 +16,7 @@ myd = int(sys.argv[2])
 trainvals = []
 testvals = []
 
-for i in range(40):
+for i in range(26):
     file_path = f'./{mydir}/pickles/train-{i}.pkl'
     with open(file_path, 'rb') as fp:
         loaded = pickle.load(fp)
@@ -27,7 +27,7 @@ for i in range(40):
 cutoff = 0.001
 overparam = [i for i in range(len(trainvals)) if trainvals[i] < cutoff]
 print("Tau Inflection at tau = ",overparam[-1])
-taus = range(1,41)
+taus = range(1,27)
 
 def growth(myarr):
     answ = []

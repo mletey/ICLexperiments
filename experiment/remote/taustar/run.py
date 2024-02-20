@@ -16,7 +16,7 @@ from model.poly import PolyConfig
 from model.transformer import TransformerConfig
 from task.regression import LinearRegressionCorrect
 
-tvals = range(41,81)
+tvals = range(1,41)
 
 sigma = 0.25;
 psi = 1;

@@ -1,0 +1,3 @@
+mkdir: cannot create directory ‘resultsdump/star40_20179827’: File exists
+mkdir: cannot create directory ‘resultsdump/star40_20179827/pickles’: File exists
+mkdir: cannot create directory ‘resultsdump/star40_20179827/errors’: File exists

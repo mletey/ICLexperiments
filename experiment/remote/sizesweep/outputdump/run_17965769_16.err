@@ -1,2 +1,0 @@
-mkdir: cannot create directory ‘resultsdump/job_taus10_17965769’: File exists
-slurmstepd: error: *** JOB 17965789 ON holygpu8a19101 CANCELLED AT 2024-02-01T01:59:25 ***

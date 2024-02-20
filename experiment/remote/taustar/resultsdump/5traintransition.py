@@ -34,24 +34,17 @@ overparam = [i for i in range(len(trainvals)) if trainvals[i] < cutoff]
 print("Tau Inflection at tau = ",overparam[-1])
 taus = range(1,81)
 
-def growth(myarr):
-    answ = []
-    for i in range(len(myarr)):
-        if i == 0:
-            answ.append(myarr[1]/myarr[0])
-        else:
-            answ.append(myarr[i]/myarr[i-1])
-    return answ
-
-
-plt.plot(taus,trainvals,label='Final Training Error')
+#plt.plot(taus,trainvals,label='Final Training Error')
 #plt.axvline(x=overparam[-1],label='tau inflection')
 # deltas = growth(trainvals)
 # plt.plot(taus[0:30],deltas[0:30],label='delta Training Error')
 #plt.axvline(x=25,label='empirical inflection')
+fig, axes = plt.subplots(nrows=1, ncols=1)
+axes.set_yscale('log')
+axes.plot(taus,trainvals,label='Final Training Error')
 plt.title(f'Train Error Regime Transition')
 plt.legend()
-plt.savefig(f'./transition-d5.png')
+plt.savefig(f'./transition-d5-log.png')
 
 # def computeslope(myarr):
 #     answ=[]

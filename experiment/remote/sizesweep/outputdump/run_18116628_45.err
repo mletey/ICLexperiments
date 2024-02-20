@@ -1,3 +1,0 @@
-mkdir: cannot create directory ‘resultsdump/job_taus40d200_18116628’: File exists
-/var/slurmd/spool/slurmd/job18178494/slurm_script: line 25: 3288816 Killed                  python tau.py $newdir $SLURM_ARRAY_TASK_ID
-slurmstepd: error: Detected 1 oom_kill event in StepId=18178494.batch. Some of the step tasks have been OOM Killed.

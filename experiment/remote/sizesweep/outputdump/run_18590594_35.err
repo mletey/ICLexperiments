@@ -1,2 +1,0 @@
-mkdir: cannot create directory ‘resultsdump/job_minitest_18590594’: File exists
-slurmstepd: error: *** JOB 18590631 ON holygpu8a27301 CANCELLED AT 2024-02-05T11:04:52 ***

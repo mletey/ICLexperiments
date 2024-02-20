@@ -1,7 +1,7 @@
 #!/bin/bash
-# linestar5_arrays.sbatch
+# star40_arrays.sbatch
 # 
-#SBATCH --job-name=linestar5
+#SBATCH --job-name=star40
 #SBATCH -c 10
 #SBATCH -t 2-00:00:00
 #SBATCH -p kempner
@@ -26,4 +26,4 @@ errdir="$parentdir/${SLURM_JOB_NAME}_${SLURM_ARRAY_JOB_ID}/errors"
 mkdir "$newdir"
 mkdir "$pkldir"
 mkdir "$errdir"
-python run.py $newdir 5 $SLURM_ARRAY_TASK_ID
+python run.py $newdir 40 $SLURM_ARRAY_TASK_ID
