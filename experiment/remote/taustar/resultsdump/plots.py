@@ -27,6 +27,8 @@ for loss_array in testloss:
 trainvals=np.array(trainvals)
 testvals=np.array(testvals)
 
+print("final ", trainvals[-1])
+
 plt.plot(range(len(trainvals)),trainvals,label='Train')
 plt.plot(range(len(testvals)),testvals,label='Test')
 plt.title(f'{myfile} train and test')

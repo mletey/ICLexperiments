@@ -17,7 +17,7 @@ from model.transformer import TransformerConfig
 from task.regression import FiniteSampler
 from task.regression import LinearRegressionCorrect
 
-d=10;
+d=20;
 tvals = range(11,61)
 h = 100;
 lays = 2;

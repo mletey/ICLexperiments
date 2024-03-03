@@ -16,7 +16,7 @@ from model.poly import PolyConfig
 from model.transformer import TransformerConfig
 from task.regression import LinearRegressionCorrect
 
-tvals = range(1,41)
+tvals = range(11,51)
 
 sigma = 0.25;
 psi = 1;
@@ -31,9 +31,9 @@ P = int(tvals[tauind]*(d**2));
 h = 10*d;
 
 trainobject = LinearRegressionCorrect(n_points = N+1, n_dims= d, eta_scale = sigma, w_scale = psi, batch_size = P, seed=None);
-config = TransformerConfig(pos_emb=False, n_hidden=h, n_layers=2)
+config = TransformerConfig(pos_emb=False, n_hidden=h, n_layers=3)
 
-state, hist = train(config, data_iter=iter(trainobject), batch_size=np.min([10000,P]), loss='mse', test_every=1000, train_iters=500000, optim=optax.adamw,lr=1e-4)
+state, hist = train(config, data_iter=iter(trainobject), batch_size=np.min([10000,P]), loss='mse', test_every=1000, train_iters=30000, optim=optax.adamw,lr=1e-4)
 
 avgerr = 0;
 loss_func = optax.squared_error
