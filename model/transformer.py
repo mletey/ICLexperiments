@@ -195,13 +195,65 @@ class TransformerBlock(nn.Module):
         return x
 
 
-class PureLinearSelfAttentionBlock(nn.Module):
+class LinearSelfAttentionBlock(nn.Module):
+    
+    config: TransformerConfig
     
     @nn.compact
     def __call__(self, inputs, decoder_mask=None, idxs=None):
-        att = jnp.einsum('...qd,...kd->...qk', inputs, inputs)
-        return att.reshape(inputs.shape[0], 1, -1)
+        dense = functools.partial(
+            nn.Dense,
+            features=self.config.n_hidden)
+        query = dense(name='query')(inputs)
+        key = dense(name='key')(inputs)
+        value = dense(name='value')(inputs)
+        depth = query.shape[-1]
 
+        attn_weights = jnp.einsum('...qd,...kd->...qk', query, key)
+        attn_weights /= jnp.sqrt(depth) #this could be a problem, this will be h not d so perhaps wrong rescaling??
+        print("shapes are", query.shape,key.shape,value.shape)
+        print("attention weight matrix has shape", attn_weights.shape)
+        print("inputs have shape", inputs.shape)
+        
+        attn_out = attn_weights @ value
+        return attn_out
+    
+class ExactLinearSelfAttentionBlock(nn.Module):
+    
+    config: TransformerConfig
+    
+    @nn.compact
+    def __call__(self, inputs, decoder_mask=None, idxs=None):
+        denseV = functools.partial(
+            nn.Dense,
+            features=inputs.shape[-1])
+        params = denseV(name='dense').init(jax.random.PRNGKey(0), inputs)
+        for i in range(inputs.shape[-1]-1):
+            index = [i,inputs.shape[-1]-1]
+            param_name = f"dense_{index[0]}_kernel"
+            params = params.get(param_name, jax.ops.index_update(params[param_name], jax.ops.index[:, index[1]], 0.0))
+            index = [inputs.shape[-1]-1,i]
+            param_name = f"dense_{index[0]}_kernel"
+            params = params.get(param_name, jax.ops.index_update(params[param_name], jax.ops.index[:, index[1]], 0.0))
+        value = nn.Dense(params=params, features=inputs.shape[-1], kernel_init=lambda *_: params['dense_0_kernel'])(inputs)
+
+        
+        denseW = functools.partial(
+            nn.Dense,
+            features=inputs.shape[-1])
+        params = denseW(name='dense').init(jax.random.PRNGKey(0), inputs)
+        for i in range(inputs.shape[-1]-1):
+            index = [i,inputs.shape[-1]-1]
+            param_name = f"dense_{index[0]}_kernel"
+            params = params.get(param_name, jax.ops.index_update(params[param_name], jax.ops.index[:, index[1]], 0.0))
+            index = [inputs.shape[-1]-1,i]
+            param_name = f"dense_{index[0]}_kernel"
+            params = params.get(param_name, jax.ops.index_update(params[param_name], jax.ops.index[:, index[1]], 0.0))
+        attn_weights = nn.Dense(params=params, features=inputs.shape[-1], kernel_init=lambda *_: params['dense_0_kernel'])(inputs)
+        attn_weights /= jnp.sqrt(inputs.shape[-1]);
+
+        attn_out = attn_weights @ inputs @ value
+        return attn_out
 
 class Transformer(nn.Module):
 
@@ -215,7 +267,7 @@ class Transformer(nn.Module):
         y = inputs
 
         if config.pure_linear_self_att:
-            y = PureLinearSelfAttentionBlock()(y)
+            y = ExactLinearSelfAttentionBlock(config=config)(y)
         else:
             # Target Embedding
             if config.n_emb is not None:
